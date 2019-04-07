@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "SkinPoint.h"
+#include "SkinTool.h"
 
 class ofApp : public ofBaseApp{
 
@@ -22,10 +22,15 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
-    SkinPoint skinPoint;
+    SkinTool skin;
     
-    vector<ofVec3f> bonesLength;
-    vector<ofVec3f> bonesPos;
-    float rotation;
+    /*
+    ofVec3f vertex1;
+    ofVec3f vertex2;
+    ofVec3f vertex3;
 		
+    ofVec3f pivot1;
+    ofVec3f pivot2;
+    */
+    
 };

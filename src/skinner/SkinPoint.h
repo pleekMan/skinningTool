@@ -6,32 +6,37 @@
 //
 //
 
-#ifndef SkinPoint_h
-#define SkinPoint_h
+#pragma once
+
+//#ifndef SkinPoint_h
+//#define SkinPoint_h
 
 #include <stdio.h>
 #include "ofMain.h"
+#include "SkinPivot.h"
 
-#endif /* SkinPoint_h */
+//#endif /* SkinPoint_h */
 
 class SkinPoint {
     
 public:
+    SkinPoint(ofVec3f vertex);
+    
     void init();
     void update();
     void render();
-    void setBone(int boneId);
-    void setBoneSystem(vector<ofVec3f> *system);
-    void rotate(ofMatrix4x4 *rotMatrix);
+    void setPosePosition(ofVec3f pos);
+    void attachToPivot(SkinPivot *pivot, float weight);
     
-    ofMatrix4x4 vertexTransform;
-    ofVec3f vertexOffset;
-    ofVec3f vertexPos;
+    ofVec3f* getPosition();
+
     
-    vector<ofVec3f> *bones;
-    int boneAttach;
-    float weight;
+    vector<SkinPivot *> pivots;
+    vector<float> weights;
     
+    ofVec3f posePosition; // INITIAL POSITION OF BOTH VERTEX AND SKINPOINT
+    ofVec3f *wrappedVertex; // WILL TRANSFORM THIS VERTEX
+      
     
     
 private:

@@ -8,14 +8,28 @@
 
 #include "SkinPoint.h"
 
+
+SkinPoint::SkinPoint(ofVec3f pos){
+    setPosePosition(pos);
+    
+}
+
+//------
+
+void SkinPoint::setPosePosition(ofVec3f pos){
+    posePosition = pos;
+}
+
+ofVec3f* SkinPoint::getPosition(){
+    return &posePosition;
+}
+
+void SkinPoint::attachToPivot(SkinPivot *pivot, float weight){
+    pivots.push_back(pivot);
+    weights.push_back(weight);
+}
+
 void SkinPoint::init(){
-    
-    //pivotPoint = ofVec3f(ofGetWindowWidth() * 0.5, ofGetWindowHeight() * 0.5, 0.0);
-    vertexPos = ofVec3f(ofGetWindowWidth() * 0.5, ofGetWindowHeight() * 0.75, 0.0);
-    
-    //vertexTransform = ofMatrix4x4();
-    //vertexTransform.makeTranslationMatrix(vertexPoint - pivotPoint);
-    
     
     
 }
@@ -33,19 +47,35 @@ void SkinPoint::update(){
 
 void SkinPoint::render(){
     
-    ofSetColor(255, 0, 0);
-    ofDrawCircle(vertexPos, 10.0);
+    // DRAW SkinPoint GIZMO
+    // STATIC => SKIN POSE
+    ofSetColor(255, 125, 0);
+    ofDrawCircle(posePosition, 5);
     
-    ofSetColor(0, 255, 0);
-    ofDrawCircle(vertexOffset, 10.0);
+    // VERTEX FOLLOW
+    //ofSetColor(255, 255, 0);
+    //ofDrawCircle(*wrappedVertex, 5);
+    
+    
     
 }
 
+/*
 void SkinPoint::rotate(ofMatrix4x4 *rotMatrix){
-    ofVec3f rotatedVertex = vertexOffset * *rotMatrix;
+    
+    // WEIGHT: "scaling" the rotation
+    ofMatrix4x4 scaling = ofMatrix4x4(weight, weight, 0,0, weight, weight, 0,0,0,0,0,0,0,0,0,0);
+    ofMatrix4x4 weightedRotation = *rotMatrix * 1.0f;
+    
+    
+    ofVec3f rotatedVertex = vertexOffset * weightedRotation;
     vertexPos = (*bones)[boneAttach] + rotatedVertex;
+    
+    cout << ofToString(vertexPos.x) + " | " + ofToString(vertexPos.y) +  " | " + ofToString(vertexPos.z) << endl;
 }
+*/
 
+/*
 void SkinPoint::setBone(int boneId){
     boneAttach = boneId;
     vertexOffset = vertexPos - (*bones)[boneAttach];
@@ -54,3 +84,4 @@ void SkinPoint::setBone(int boneId){
 void SkinPoint::setBoneSystem(vector<ofVec3f> *system){
     bones = system;
 }
+*/

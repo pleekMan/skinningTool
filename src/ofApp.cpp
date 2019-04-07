@@ -3,26 +3,74 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-    
+    /*
     rotation = 10;
     
-    ofVec3f bonesPivot = ofVec3f(ofGetWindowWidth() * 0.5, ofGetWindowHeight() * 0.25,0);
     
-    for (int i=0; i<4; i++) {
-        bonesLength.push_back(ofVec3f(0, 100,0)); // LENGTH ON Y-AXIS
-        bonesPos.push_back(bonesPivot + (bonesLength[i] * i));
+    for (int i=0; i<3; i++) {
+        bonesPos.push_back(ofVec3f(ofGetWindowWidth() * 0.5, (ofGetWindowHeight() *0.5f) + (100 * i),0));
     }
-
     
+    skinner.setPivots(&bonesPos);
+    */
+    /* THIS WORKED
     skinPoint.init();
     skinPoint.setBoneSystem(&bonesPos);
     skinPoint.setBone(bonesPos.size() - 1);
+     */
+    
+    //skin.init();
+    
+    // RAW VECTORS FOR POINTS
+    ofVec3f vertex0 = ofVec3f(100,100);
+    ofVec3f vertex1 = ofVec3f(200,100);
+    ofVec3f vertex2 = ofVec3f(300,100);
+    
+    // RAW VECTORS FOR PIVOTS
+    ofVec3f pivot0 = ofVec3f(150,200);
+    ofVec3f pivot1 = ofVec3f(250,200);
+    
+    // SETUP SkinPoints
+    skin.createSkinPoint(vertex0);
+    skin.createSkinPoint(vertex1);
+    skin.createSkinPoint(vertex2);
+
+    
+    // SETUP SkinPivots
+    skin.createSkinPivot(pivot0);
+    skin.createSkinPivot(pivot1);
+    
+    
+    // ATTACHING Points AND Pivots
+    SkinPoint* sPo0 = skin.getSkinPoint(0);
+    SkinPoint* sPo1 = skin.getSkinPoint(1);
+    SkinPoint* sPo2 = skin.getSkinPoint(2);
+    
+    SkinPivot* sPi0 = skin.getSkinPivot(0);
+    SkinPivot* sPi1 = skin.getSkinPivot(1);
+    
+    skin.link(sPo0, sPi0, 1.0);
+    skin.link(sPo2, sPi1, 1.0);
+    
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     
+    /*
+    for (int i=0; i<3; i++) {
+        //bonesPos[i].x = ofGetWindowWidth() * 0.5 + (sin(ofGetFrameNum() * 0.1) * (10 * (i+1)));
+        bonesPos[i].x += 1;
+    }
+     */
+    
+    
+    
+    
+    
     // SWINGING THE BONES (FORWARD KINEMATICS) -----------
+    /*
     float angleIncrement = rotation;
     
     for (int i=1; i<bonesPos.size(); i++) {
@@ -48,12 +96,47 @@ void ofApp::update(){
     
     
     skinPoint.update();
+     */
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofBackground(0);
     
+    
+    
+    SkinPivot* pivot1 = skin.getSkinPivot(0);
+    pivot1->setPosition(ofGetMouseX(), ofGetMouseY());
+    
+    skin.drawPoints();
+    skin.drawPivots();
+    
+    /*
+    for (int i=0; i<skin.getPointCount(); i++) {
+        ofVec3f* pos = skin.getSkinPoint(i)->getPosition();
+        ofDrawCircle(pos->x, pos->y, 5);
+        
+    }
+     */
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // THIS WORKED
+    /*
     ofSetColor(0, 255, 255);
     
     for (int i=1; i<bonesPos.size(); i++) {
@@ -80,21 +163,16 @@ void ofApp::draw(){
     //------------
     
     skinPoint.render();
+     */
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if (key == '1') {
-        skinPoint.setBone(1);
+        //skinPoint.setBone(1);
     }
     
-    if (key == '2') {
-        skinPoint.setBone(2);
-    }
     
-    if (key == '3') {
-        skinPoint.setBone(3);
-    }
 
 }
 

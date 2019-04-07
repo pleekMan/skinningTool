@@ -1,0 +1,45 @@
+//
+//  SkinTool.hpp
+//  skinningTool
+//
+//  Created by PleekMan on 5/4/2019.
+//
+//
+
+#pragma once
+
+//#ifndef SkinTool_h
+//#define SkinTool_h
+
+#include <stdio.h>
+#include "SkinPivot.h"
+#include "SkinPoint.h"
+#include "ofMain.h"
+
+//#endif /* SkinTool_h */
+
+class SkinTool {
+    
+    
+public:
+    //SkinTool();
+    void init();
+    void render();
+    
+    void drawPivots();
+    void drawPoints();
+    
+    void createSkinPoint(ofVec3f vertex);
+    void createSkinPivot(ofVec3f vert);
+    
+    
+    SkinPoint* getSkinPoint(int i);
+    SkinPivot* getSkinPivot(int i);
+    int getPointCount();
+
+    
+    void link(SkinPoint *point, SkinPivot *pivot, float weight);
+    
+    vector<SkinPivot> pivots;
+    vector<SkinPoint> points;
+};
