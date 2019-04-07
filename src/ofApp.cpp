@@ -106,10 +106,16 @@ void ofApp::draw(){
     
     
     SkinPivot* pivot1 = skin.getSkinPivot(0);
-    pivot1->setPosition(ofGetMouseX(), ofGetMouseY());
+    pivot1->setTransformedPosition(ofVec3f(ofGetMouseX(), ofGetMouseY()));
+    
+    skin.update();
     
     skin.drawPoints();
     skin.drawPivots();
+    
+    
+    //string p1t = ofToString(skin.getSkinPoint(0)->getPosition());
+    
     
     /*
     for (int i=0; i<skin.getPointCount(); i++) {

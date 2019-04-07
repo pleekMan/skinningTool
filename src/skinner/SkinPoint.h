@@ -26,16 +26,19 @@ public:
     void update();
     void render();
     void setPosePosition(ofVec3f pos);
+    void transform(ofVec3f delta);
     void attachToPivot(SkinPivot *pivot, float weight);
     
     ofVec3f* getPosition();
+    vector<SkinPivot*> getPivots();
+    vector<float> getWeights();
 
     
     vector<SkinPivot *> pivots;
     vector<float> weights;
     
     ofVec3f posePosition; // INITIAL POSITION OF BOTH VERTEX AND SKINPOINT
-    ofVec3f *wrappedVertex; // WILL TRANSFORM THIS VERTEX
+    ofVec3f transformedposition; // WILL TRANSFORM THIS VERTEX
       
     
     

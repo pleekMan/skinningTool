@@ -20,10 +20,13 @@ class SkinPivot {
     
 public:
     SkinPivot();
-    SkinPivot(ofVec3f &pos);
-    void setPosition(ofVec3f &pos);
-    void setPosition(float x, float y);
+    SkinPivot(ofVec3f pos);
     
+    void setPosePosition(ofVec3f pos);
+    void setTransformedPosition(ofVec3f pos);
+    
+    
+    ofVec3f posePosition;
     ofVec3f position;
 };
 

@@ -22,9 +22,8 @@ class SkinTool {
     
     
 public:
-    //SkinTool();
-    void init();
-    void render();
+    
+    void update();
     
     void drawPivots();
     void drawPoints();

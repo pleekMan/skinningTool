@@ -8,20 +8,20 @@
 
 #include "SkinPivot.h"
 
-SkinPivot::SkinPivot(ofVec3f & pos){
-    setPosition(pos.x, pos.y);
+SkinPivot::SkinPivot(ofVec3f pos){
+    setPosePosition(pos);
 
 }
 
 
 //-------
 
-void SkinPivot::setPosition(ofVec3f & pos){
-    setPosition(pos.x, pos.y);
+void SkinPivot::setPosePosition(ofVec3f pos){
+    posePosition = pos;
 }
 
 //----------
 
-void SkinPivot::setPosition(float x, float y){
-    position = ofVec3f(x, y, 0);
+void SkinPivot::setTransformedPosition(ofVec3f pos){
+    position = pos;
 }

@@ -10,17 +10,41 @@
 //#include "SkinPivot.h"
 
 
-void SkinTool::init(){
-    
-}
+//-----
 
+void SkinTool::update(){
+    
+    // FOR ALL SkinPoints
+    for (int i=0; i<points.size(); i++) {
+        
+        SkinPoint* sPo = &points[i];
+        
+        // FOR ALL ATTACHED SkinPivots
+        for (int j=0; j < sPo->getPivots().size(); j++) {
+            
+            SkinPivot* sPi = sPo->getPivots()[j];
+            
+            // CALCULATE SkinPivot OFFSET
+            ofVec3f pivotDelta = sPi->position - sPi->posePosition;
+            
+            // Multiply by weight
+            pivotDelta *= sPo->getWeights()[j];
+            
+            // Apply to SkinPoint
+            sPo->transform(pivotDelta);
+            
+        }
+        
+    }
+}
 //-----
 
 void SkinTool::drawPivots(){
     ofSetColor(255,0,0);
-    ofFill();
+    //ofNoFill();
     for (int i=0; i<pivots.size(); i++) {
-        ofDrawCircle(pivots[i].position,5);
+        ofDrawLine(pivots[i].position.x, pivots[i].position.y - 12, pivots[i].position.x, pivots[i].position.y + 4);
+        ofDrawLine(pivots[i].position.x - 5, pivots[i].position.y, pivots[i].position.x + 5, pivots[i].position.y);
     }
 }
 
@@ -71,34 +95,3 @@ void SkinTool::link(SkinPoint* point, SkinPivot* pivot, float weight){
 }
 
 //-----
-
-/*
-void SkinTool::setPivots(vector<ofVec3f> *pointsForPivots){
-    
-    for (int i=0; i < pointsForPivots->size(); i++) {
-        SkinPivot newPivot = SkinPivot((*pointsForPivots)[i]);
-        pivots.push_back(newPivot);
-    }
-    
-}
- */
-
-//--------
-
-
-
-
-//---------
-
-void SkinTool::render(){
-    ofSetColor(255, 0, 0);
-    ofNoFill();
-    int hSize = 10;
-    for (int i=0; i<pivots.size(); i++) {
-        // ASTERISK
-        ofDrawLine(pivots[i].position.x - hSize, pivots[i].position.y, pivots[i].position.x + hSize, pivots[i].position.y);
-        ofDrawLine(pivots[i].position.x, pivots[i].position.y - hSize, pivots[i].position.x, pivots[i].position.y + hSize);
-        ofDrawLine(pivots[i].position.x - hSize, pivots[i].position.y - hSize, pivots[i].position.x + hSize, pivots[i].position.y + hSize);
-        ofDrawLine(pivots[i].position.x - hSize, pivots[i].position.y + hSize, pivots[i].position.x + hSize, pivots[i].position.y - hSize);
-    }
-}

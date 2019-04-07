@@ -20,13 +20,25 @@ void SkinPoint::setPosePosition(ofVec3f pos){
     posePosition = pos;
 }
 
+void SkinPoint::transform(ofVec3f delta){
+    transformedposition = posePosition + delta;
+}
+
 ofVec3f* SkinPoint::getPosition(){
-    return &posePosition;
+    return &transformedposition; // CHANGE TO TRANSFORMED POSITION
 }
 
 void SkinPoint::attachToPivot(SkinPivot *pivot, float weight){
     pivots.push_back(pivot);
     weights.push_back(weight);
+}
+
+vector <SkinPivot*> SkinPoint::getPivots(){
+    return pivots;
+}
+
+vector<float> SkinPoint::getWeights(){
+    return weights;
 }
 
 void SkinPoint::init(){
