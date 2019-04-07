@@ -28,19 +28,36 @@ void SkinTool::update(){
             SkinPivot* sPi = sPo->getPivots()[j];
             
             // CALCULATE SkinPivot OFFSET
-            ofVec3f pivotDelta = sPi->position - sPi->posePosition;
+            //ofVec3f boneMatrix = sPi->position - sPi->posePosition;
+            
+            ofMatrix4x4 boneMatrix; // (3d Bone Matrix: Transformation Matrix local to Pivot/Bone Space)
+            ofMatrix4x4 rotation;
+            ofMatrix4x4 translation;
+            boneMatrix.makeTranslationMatrix(sPo->posePosition - sPi->posePosition);
+            rotation.makeRotationMatrix(ofRadToDeg(sPi->rotation), ofVec3f(0,0,1));
+            translation.makeTranslationMatrix(sPi->position - sPi->posePosition);
+            
+            // BEGIN TRANSFORMATION SEQUENCE
+            //ofVec3f transformedPoint = boneMatrix * ofVec3f(1);
+            ofVec3f transformedPoint = sPo->posePosition - sPi->posePosition;
+            //transformedPoint =  boneMatrix.getInverse() * transformedPoint; // translate P to origin
+            //transformedPoint = rotation * transformedPoint; // rotate
+            transformedPoint = transformedPoint.rotate(ofRadToDeg(sPi->rotation * sPo->getWeights()[j]), ofVec3f(0,0,1)); // rotate
+            transformedPoint = transformedPoint + (sPi->getTranslation() * sPo->getWeights()[j]); // translate
+            transformedPoint = transformedPoint + sPi->posePosition; // translate back to Pivot/Bone Space
+            
             
             // Multiply by weight
-            pivotDelta *= sPo->getWeights()[j];
+            //transformedPoint *= sPo->getWeights()[j];
             
             // ADD TO transformSum
-            transformSum += pivotDelta;
+            transformSum += transformedPoint; // SHOULD NOT BE SUMMED
 
             
         }
         
         // Apply to SkinPoint
-        sPo->transform(transformSum);
+        sPo->setPosition(transformSum);
         
     }
 }
@@ -49,9 +66,18 @@ void SkinTool::update(){
 void SkinTool::drawPivots(){
     ofSetColor(255,0,0);
     //ofNoFill();
+    
     for (int i=0; i<pivots.size(); i++) {
-        ofDrawLine(pivots[i].position.x, pivots[i].position.y - 12, pivots[i].position.x, pivots[i].position.y + 4);
-        ofDrawLine(pivots[i].position.x - 5, pivots[i].position.y, pivots[i].position.x + 5, pivots[i].position.y);
+        
+        ofPushMatrix();
+        
+        ofTranslate(pivots[i].position);
+        ofRotateZ(ofRadToDeg(pivots[i].rotation));
+        
+        ofDrawLine(0, 0 - 20, 0, 0 + 8);
+        ofDrawLine(0 - 10, 0, 0 + 10, 0);
+        
+        ofPopMatrix();
     }
 }
 
@@ -61,6 +87,36 @@ void SkinTool::drawPoints(){
     ofNoFill();
     for (int i=0; i<points.size(); i++) {
         ofDrawCircle(*points[i].getPosition(),5);
+    }
+}
+
+//-----
+
+void SkinTool::drawPose(){
+    
+    // PIVOTS
+    
+    ofSetColor(200);
+    //ofNoFill();
+    
+    for (int i=0; i<pivots.size(); i++) {
+        
+        ofPushMatrix();
+        
+        ofTranslate(pivots[i].posePosition);
+        //ofRotateZ(ofRadToDeg(pivots[i].rotation));
+        
+        ofDrawLine(0, 0 - 20, 0, 0 + 8);
+        ofDrawLine(0 - 10, 0, 0 + 10, 0);
+        
+        ofPopMatrix();
+    }
+    
+    // POINTS
+    ofSetColor(127);
+    ofNoFill();
+    for (int i=0; i<points.size(); i++) {
+        ofDrawCircle(*points[i].getPosePosition(),5);
     }
 }
 
@@ -97,7 +153,7 @@ int SkinTool::getPointCount(){
 }
 
 //-----
-void SkinTool::skin(SkinPoint* point, SkinPivot* pivot, float weight){
+void SkinTool::bind(SkinPoint* point, SkinPivot* pivot, float weight){
     
     // CHECK IF THE POINT ALREADY IS ATTACHED TO THE PIVOT, TO NOT ADD THE SAME PIVOT TO THE SkinPoint's pivotlist
     /*

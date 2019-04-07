@@ -20,8 +20,12 @@ void SkinPoint::setPosePosition(ofVec3f pos){
     posePosition = pos;
 }
 
-void SkinPoint::transform(ofVec3f delta){
-    transformedposition = posePosition + delta;
+void SkinPoint::setPosition(ofVec3f newPos){
+    transformedposition = newPos;
+}
+
+ofVec3f* SkinPoint::getPosePosition(){
+    return &posePosition; // CHANGE TO TRANSFORMED POSITION
 }
 
 ofVec3f* SkinPoint::getPosition(){

@@ -24,6 +24,8 @@ class ofApp : public ofBaseApp{
     
     SkinTool skin;
     
+    int selectedPivot;
+    
     /*
     ofVec3f vertex1;
     ofVec3f vertex2;

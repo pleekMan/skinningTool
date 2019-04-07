@@ -26,10 +26,12 @@ public:
     void update();
     void render();
     void setPosePosition(ofVec3f pos);
-    void transform(ofVec3f delta);
+    void setPosition(ofVec3f newPos);
     void attachToPivot(SkinPivot *pivot, float weight);
     
     ofVec3f* getPosition();
+    ofVec3f* getPosePosition();
+
     vector<SkinPivot*> getPivots();
     vector<float> getWeights();
 
