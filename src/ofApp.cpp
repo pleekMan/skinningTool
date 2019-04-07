@@ -27,30 +27,31 @@ void ofApp::setup(){
     ofVec3f vertex2 = ofVec3f(300,100);
     
     // RAW VECTORS FOR PIVOTS
-    ofVec3f pivot0 = ofVec3f(150,200);
-    ofVec3f pivot1 = ofVec3f(250,200);
+    ofVec3f pivot0 = ofVec3f(50,200);
+    ofVec3f pivot1 = ofVec3f(150,200);
     
     // SETUP SkinPoints
     skin.createSkinPoint(vertex0);
-    skin.createSkinPoint(vertex1);
-    skin.createSkinPoint(vertex2);
+    //skin.createSkinPoint(vertex1);
+    //skin.createSkinPoint(vertex2);
 
     
     // SETUP SkinPivots
-    skin.createSkinPivot(pivot0);
-    skin.createSkinPivot(pivot1);
+    skin.createSkinPivot(pivot0, 0);
+    skin.createSkinPivot(pivot1, 1);
     
     
     // ATTACHING Points AND Pivots
     SkinPoint* sPo0 = skin.getSkinPoint(0);
-    SkinPoint* sPo1 = skin.getSkinPoint(1);
-    SkinPoint* sPo2 = skin.getSkinPoint(2);
+    //SkinPoint* sPo1 = skin.getSkinPoint(1);
+    //SkinPoint* sPo2 = skin.getSkinPoint(2);
     
     SkinPivot* sPi0 = skin.getSkinPivot(0);
     SkinPivot* sPi1 = skin.getSkinPivot(1);
     
-    skin.link(sPo0, sPi0, 1.0);
-    skin.link(sPo2, sPi1, 1.0);
+    skin.skin(sPo0, sPi0, 0.5);
+    skin.skin(sPo0, sPi1, 0.5);
+    //skin.link(sPo2, sPi1, 1.0);
     
     
 }

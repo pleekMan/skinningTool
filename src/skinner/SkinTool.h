@@ -29,16 +29,19 @@ public:
     void drawPoints();
     
     void createSkinPoint(ofVec3f vertex);
-    void createSkinPivot(ofVec3f vert);
-    
+    void createSkinPivot(ofVec3f vert, int _id);
+    bool isAlreadyAttached(SkinPoint* point, SkinPivot* pivot);
+
     
     SkinPoint* getSkinPoint(int i);
     SkinPivot* getSkinPivot(int i);
     int getPointCount();
 
     
-    void link(SkinPoint *point, SkinPivot *pivot, float weight);
+    void skin(SkinPoint *point, SkinPivot *pivot, float weight);
     
     vector<SkinPivot> pivots;
     vector<SkinPoint> points;
+    
+    
 };

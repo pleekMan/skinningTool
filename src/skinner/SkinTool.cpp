@@ -14,8 +14,11 @@
 
 void SkinTool::update(){
     
+    
     // FOR ALL SkinPoints
     for (int i=0; i<points.size(); i++) {
+        
+        ofVec3f transformSum = ofVec3f();
         
         SkinPoint* sPo = &points[i];
         
@@ -30,10 +33,14 @@ void SkinTool::update(){
             // Multiply by weight
             pivotDelta *= sPo->getWeights()[j];
             
-            // Apply to SkinPoint
-            sPo->transform(pivotDelta);
+            // ADD TO transformSum
+            transformSum += pivotDelta;
+
             
         }
+        
+        // Apply to SkinPoint
+        sPo->transform(transformSum);
         
     }
 }
@@ -59,8 +66,8 @@ void SkinTool::drawPoints(){
 
 //-----
 
-void SkinTool::createSkinPivot(ofVec3f vert){
-    SkinPivot newPivot = SkinPivot(vert);
+void SkinTool::createSkinPivot(ofVec3f vert, int _id){
+    SkinPivot newPivot = SkinPivot(vert, _id);
     pivots.push_back(newPivot);
 }
 
@@ -90,8 +97,32 @@ int SkinTool::getPointCount(){
 }
 
 //-----
-void SkinTool::link(SkinPoint* point, SkinPivot* pivot, float weight){
-    point->attachToPivot(pivot, weight);
+void SkinTool::skin(SkinPoint* point, SkinPivot* pivot, float weight){
+    
+    // CHECK IF THE POINT ALREADY IS ATTACHED TO THE PIVOT, TO NOT ADD THE SAME PIVOT TO THE SkinPoint's pivotlist
+    /*
+    bool alreadyAttached = isAlreadyAttached(point, pivot);
+    
+    if (alreadyAttached) {
+        int pivotId = pivot->pivotId;
+    } else{
+        point->attachToPivot(pivot, weight);
+    }
+     */
+     point->attachToPivot(pivot, weight);
 }
 
 //-----
+
+bool SkinTool::isAlreadyAttached(SkinPoint *point, SkinPivot *pivot){
+    
+    for (int i=0; i<point->getPivots().size(); i++) {
+        int inputPivotId = pivot->pivotId;
+        int currentPivotId = point->getPivots()[i]->pivotId;
+        
+        if(inputPivotId == currentPivotId)return true;
+    }
+    
+    return false;
+    
+}
