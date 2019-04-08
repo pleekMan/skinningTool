@@ -28,10 +28,12 @@ public:
     void drawPose();
     void drawPivots();
     void drawPoints();
+    void drawTensorsForPoint(SkinPoint* point);
+    void drawHeatMapForPivot(SkinPivot* pivot);
     
-    void createSkinPoint(ofVec3f vertex);
-    void createSkinPivot(ofVec3f vert, int _id);
-
+    void createSkinPoint(ofVec3f node);
+    void createSkinPivot(ofVec3f vertex);
+    
     
     SkinPoint* getSkinPoint(int i);
     SkinPivot* getSkinPivot(int i);
@@ -39,14 +41,13 @@ public:
     vector<SkinPoint>* getSkinPoints();
     vector<SkinPivot>* getSkinPivots();
 
-
-
-    
+    void clearPointBindings();
     void bind(SkinPoint *point, SkinPivot *pivot, float weight);
     void bindByDistance(vector<SkinPoint>* inPoints, vector<SkinPivot>* inPivots, float distanceLimit);
     
     vector<SkinPivot> pivots;
     vector<SkinPoint> points;
+    int pivotIdCounter = 0;
     
 private:
     bool isAlreadyAttached(SkinPoint* point, SkinPivot* pivot);

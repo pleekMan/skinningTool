@@ -58,7 +58,18 @@ void ofApp::setup(){
     
     //skin.bind(sPo2, sPi1, 1.0);
     
-    buildSnake();
+    /*
+    ofVec3f* pivot3 = &pivot0;
+    cout << &pivot0 << " | " << *pivot3 << endl;
+    cout << ofToString(pivot3 == &pivot0) << endl;
+    //pivot3 == &pivot0;
+    */
+    //------
+    
+    
+    //buildSnake();
+    skinTheBall();
+    
     
 }
 
@@ -74,7 +85,7 @@ void ofApp::draw(){
     
     
     SkinPivot* pivot1 = skin.getSkinPivot(selectedPivot);
-    pivot1->setTransformedPosition(ofVec3f(pivot1->position.x, ofGetMouseY()));
+    //pivot1->setTransformedPosition(ofVec3f(pivot1->position.x, ofGetMouseY()));
     pivot1->setRotation(ofMap(ofGetMouseX(), 0, ofGetWindowWidth(), 0, HALF_PI));
     //pivot1->setRotation(HALF_PI);
 
@@ -85,6 +96,12 @@ void ofApp::draw(){
     skin.drawPose();
     skin.drawPoints();
     skin.drawPivots();
+    
+    skin.drawTensorsForPoint(skin.getSkinPoint( selectedPoint % skin.getSkinPoints()->size() ));
+    
+    if(showPivotHeatMap){
+        skin.drawHeatMapForPivot(skin.getSkinPivot(selectedPivot));
+    }
     
     ofSetColor(0,255,255);
     ofDrawBitmapString(ofToString(ofVec2f(ofGetMouseX(),ofGetMouseY())), ofGetMouseX(), ofGetMouseY());
@@ -111,11 +128,33 @@ void ofApp::buildSnake(){
     for (int i =0; i<5; i++) {
         ofVec3f pivot = pivotStartPos + ofVec3f(separation * i, startPos.y);
         
-        skin.createSkinPivot(pivot, i);
+        skin.createSkinPivot(pivot);
     }
 
     skin.bindByDistance(skin.getSkinPoints(), skin.getSkinPivots(), 200);
     
+    
+}
+//--------------------------------------------------------------
+
+void ofApp::skinTheBall(){
+    
+    ofPath circle;
+    circle.circle(500, 500, 300);
+    
+    vector<ofVec3f> verts = circle.getOutline()[0].getVertices(); // GET THE VERTICES OF THE FIRST PATH INSIDE THE ofPath
+    
+    // SKIN POINTS
+    for (int i=0; i<verts.size(); i++) {
+        skin.createSkinPoint(verts[i]);
+    }
+    
+    skin.createSkinPivot(ofVec3f(400, 400));
+    skin.createSkinPivot(ofVec3f(600, 400));
+    skin.createSkinPivot(ofVec3f(400, 600));
+    skin.createSkinPivot(ofVec3f(600, 600));
+    
+    skin.bindByDistance(skin.getSkinPoints(), skin.getSkinPivots(), 500);
     
 }
 
@@ -128,7 +167,26 @@ void ofApp::keyPressed(int key){
         selectedPivot = 1;
     }
     
-
+    if (key == '3') {
+        skin.bindByDistance(skin.getSkinPoints(), skin.getSkinPivots(), 500 * (ofGetMouseY() / (float)ofGetWindowHeight() ));
+    }
+    
+    if (key == 'q' || key == 'Q') {
+        selectedPoint--;
+    }
+    if (key == 'w' || key == 'W') {
+        selectedPoint++;
+    }
+    
+    if (key == 'c' || key == 'C') {
+        skin.clearPointBindings();
+    }
+    
+    if (key == 'h' || key == 'H') {
+        showPivotHeatMap = !showPivotHeatMap;
+    }
+    
+    
 }
 
 //--------------------------------------------------------------

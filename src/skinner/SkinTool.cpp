@@ -133,9 +133,57 @@ void SkinTool::drawPose(){
 
 //-----
 
-void SkinTool::createSkinPivot(ofVec3f vert, int _id){
-    SkinPivot newPivot = SkinPivot(vert, _id);
+void SkinTool::drawTensorsForPoint(SkinPoint* point){
+    
+
+    ofSetColor(0, 127, 127);
+    for (int i=0; i< point->getPivots().size(); i++) {
+        SkinPivot* sPi = point->getPivots()[i];
+        
+        ofVec3f pointToPivot = sPi->posePosition - point->posePosition;
+        pointToPivot *= point->getWeights()[i];
+        
+        ofDrawLine(point->posePosition, pointToPivot + point->posePosition);
+        
+    }
+    
+    
+}
+
+void SkinTool::drawHeatMapForPivot(SkinPivot* pivot){
+    
+    ofFill();
+    
+    int selectedPivotId = pivot->pivotId;
+    
+    for (int i=0; i < points.size(); i++) {
+        SkinPoint* sPo = &points[i];
+        
+        for (int j=0; j < sPo->getPivots().size(); j++) {
+            
+            if(selectedPivotId == sPo->getPivots()[j]->pivotId){
+                
+                ofVec3f pos = *sPo->getPosition();
+                ofSetColor(sPo->weights[j] * 255, 0, 0);
+                
+                ofDrawCircle(pos, 8);
+                
+                break;
+            }
+            
+        }
+        
+    }
+}
+
+//-----
+
+void SkinTool::createSkinPivot(ofVec3f node){
+    
+    SkinPivot newPivot = SkinPivot(node, pivotIdCounter);
     pivots.push_back(newPivot);
+    
+    pivotIdCounter++;
 }
 
 //-----
@@ -195,8 +243,11 @@ void SkinTool::bind(SkinPoint* point, SkinPivot* pivot, float weight){
 
 void SkinTool::bindByDistance(vector<SkinPoint>* inPoints, vector<SkinPivot>* inPivots, float distanceLimit){
 
+
+    clearPointBindings();
     
     cout << " Pivot : Point : Weight" << endl;
+    
     for(int i=0; i < points.size(); i++ ){
         SkinPoint* sPo = &(*inPoints)[i]; // GETTING A POINTER TO THE OBJECT INSIDE THE vector POINTER
         
@@ -218,6 +269,18 @@ void SkinTool::bindByDistance(vector<SkinPoint>* inPoints, vector<SkinPivot>* in
 }
 
 //-----
+
+void SkinTool::clearPointBindings(){
+    // CLEARS ALL WEIGHTS AND ATTACHED PIVOTS FROM ALL POINTS
+    // DOES NOT CLEAR points AND pivots ALREADY CREATED IN THE SKIN
+    
+    for (int i=0; i<points.size(); i++) {
+        points[i].pivots.clear();
+        points[i].weights.clear();
+    }
+}
+//-----
+
 
 bool SkinTool::isAlreadyAttached(SkinPoint *point, SkinPivot *pivot){
     

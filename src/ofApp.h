@@ -24,7 +24,10 @@ class ofApp : public ofBaseApp{
     
     SkinTool skin;
     
-    int selectedPivot;
+    int selectedPivot = 0;
+    int selectedPoint = 0;
+    
+    bool showPivotHeatMap = false;
     
     /*
     ofVec3f vertex1;
@@ -37,5 +40,7 @@ class ofApp : public ofBaseApp{
     
 private:
     void buildSnake();
+    void skinTheBall();
+
     
 };
