@@ -18,9 +18,11 @@ void SkinTool::update(){
     // FOR ALL SkinPoints
     for (int i=0; i<points.size(); i++) {
         
-        ofVec3f transformSum = ofVec3f();
         
         SkinPoint* sPo = &points[i];
+        
+        // (IF NO PIVOT WAS MOVED, REMAIN AT YOUR POSE POSITION)
+        ofVec3f finalPos = *sPo->getPosePosition();
         
         // FOR ALL ATTACHED SkinPivots
         for (int j=0; j < sPo->getPivots().size(); j++) {
@@ -30,34 +32,43 @@ void SkinTool::update(){
             // CALCULATE SkinPivot OFFSET
             //ofVec3f boneMatrix = sPi->position - sPi->posePosition;
             
+            /*
             ofMatrix4x4 boneMatrix; // (3d Bone Matrix: Transformation Matrix local to Pivot/Bone Space)
             ofMatrix4x4 rotation;
             ofMatrix4x4 translation;
             boneMatrix.makeTranslationMatrix(sPo->posePosition - sPi->posePosition);
             rotation.makeRotationMatrix(ofRadToDeg(sPi->rotation), ofVec3f(0,0,1));
             translation.makeTranslationMatrix(sPi->position - sPi->posePosition);
+            */
             
             // BEGIN TRANSFORMATION SEQUENCE
             //ofVec3f transformedPoint = boneMatrix * ofVec3f(1);
             ofVec3f transformedPoint = sPo->posePosition - sPi->posePosition;
             //transformedPoint =  boneMatrix.getInverse() * transformedPoint; // translate P to origin
             //transformedPoint = rotation * transformedPoint; // rotate
-            transformedPoint = transformedPoint.rotate(ofRadToDeg(sPi->rotation * sPo->getWeights()[j]), ofVec3f(0,0,1)); // rotate
-            transformedPoint = transformedPoint + (sPi->getTranslation() * sPo->getWeights()[j]); // translate
+            
+            transformedPoint = transformedPoint.rotate(ofRadToDeg(sPi->rotation), ofVec3f(0,0,1)); // rotate
+            transformedPoint = transformedPoint + (sPi->getTranslation()); // translate
             transformedPoint = transformedPoint + sPi->posePosition; // translate back to Pivot/Bone Space
             
             
-            // Multiply by weight
-            //transformedPoint *= sPo->getWeights()[j];
-            
-            // ADD TO transformSum
-            transformSum += transformedPoint; // SHOULD NOT BE SUMMED
+            // Weighted INTERPOLATION => ADD TO FINAL POSITION -> DELTA TRANSFORM * WEIGHT
+            finalPos += (transformedPoint - *sPo->getPosePosition())  * sPo->getWeights()[j];
 
             
         }
         
+        
+        // WEIGHTED INTERPOLATION
+        /*
+        ofVec3f finalPos = *sPo->getPosePosition();
+        for (int i=0; i<transforms.size(); i++) {
+        }
+         */
+
+        
         // Apply to SkinPoint
-        sPo->setPosition(transformSum);
+        sPo->setPosition(finalPos);
         
     }
 }
@@ -148,6 +159,18 @@ SkinPivot* SkinTool::getSkinPivot(int i){
 
 //-----
 
+vector<SkinPoint>* SkinTool::getSkinPoints(){
+    return &points;
+}
+
+//-----
+
+vector<SkinPivot>* SkinTool::getSkinPivots(){
+    return &pivots;
+}
+
+//-----
+
 int SkinTool::getPointCount(){
     return points.size();
 }
@@ -166,6 +189,32 @@ void SkinTool::bind(SkinPoint* point, SkinPivot* pivot, float weight){
     }
      */
      point->attachToPivot(pivot, weight);
+}
+
+//-----
+
+void SkinTool::bindByDistance(vector<SkinPoint>* inPoints, vector<SkinPivot>* inPivots, float distanceLimit){
+
+    
+    cout << " Pivot : Point : Weight" << endl;
+    for(int i=0; i < points.size(); i++ ){
+        SkinPoint* sPo = &(*inPoints)[i]; // GETTING A POINTER TO THE OBJECT INSIDE THE vector POINTER
+        
+        for(int j=0; j < pivots.size(); j++){
+            SkinPivot* sPi = &(*inPivots)[j];
+            
+            float distance = sPi->posePosition.distance(sPo->posePosition);
+            if(distance <= distanceLimit){
+                float distanceNorm = ofMap(distance, 0, distanceLimit, 1, 0); // TO NORM
+                bind(sPo, sPi, distanceNorm);
+                cout << "-| " + ofToString(j) + " : " + ofToString(i) + " : " + ofToString(distanceNorm) << endl;
+            }
+        }
+        
+        sPo->normalizeWeights();
+    }
+    
+    
 }
 
 //-----

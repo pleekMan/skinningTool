@@ -45,6 +45,23 @@ vector<float> SkinPoint::getWeights(){
     return weights;
 }
 
+void SkinPoint::normalizeWeights(){
+    // NORMALIZE value/count
+    
+    // SUM ALL UN-NORMALIZED VALUES
+    float unNormalizedSum = 0;
+    for (float weight : weights) {
+        unNormalizedSum += weight;
+    }
+    
+    // REMAP TO 0 -> 1
+    for (int i=0; i<weights.size(); i++) {
+        weights[i] = ofMap(weights[i], 0, unNormalizedSum, 0, 1);
+    }
+    
+    
+}
+
 void SkinPoint::init(){
     
     

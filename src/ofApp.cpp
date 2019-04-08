@@ -27,36 +27,38 @@ void ofApp::setup(){
     ofVec3f vertex2 = ofVec3f(300,100);
     
     // RAW VECTORS FOR PIVOTS
-    ofVec3f pivot0 = ofVec3f(100,200);
-    ofVec3f pivot1 = ofVec3f(200,200);
+    ofVec3f pivot0 = ofVec3f(150,200);
+    ofVec3f pivot1 = ofVec3f(250,200);
     
     // SETUP SkinPoints
-    skin.createSkinPoint(vertex0);
-    skin.createSkinPoint(vertex1);
-    skin.createSkinPoint(vertex2);
+    //skin.createSkinPoint(vertex0);
+    //skin.createSkinPoint(vertex1);
+    //skin.createSkinPoint(vertex2);
 
     
     // SETUP SkinPivots
-    skin.createSkinPivot(pivot0, 0);
-    skin.createSkinPivot(pivot1, 1);
+    //skin.createSkinPivot(pivot0, 0);
+    //skin.createSkinPivot(pivot1, 1);
     
     
     // ATTACHING Points AND Pivots
-    SkinPoint* sPo0 = skin.getSkinPoint(0);
-    SkinPoint* sPo1 = skin.getSkinPoint(1);
-    SkinPoint* sPo2 = skin.getSkinPoint(2);
+    //SkinPoint* sPo0 = skin.getSkinPoint(0);
+    //SkinPoint* sPo1 = skin.getSkinPoint(1);
+    //SkinPoint* sPo2 = skin.getSkinPoint(2);
     
-    SkinPivot* sPi0 = skin.getSkinPivot(0);
-    SkinPivot* sPi1 = skin.getSkinPivot(1);
+    //SkinPivot* sPi0 = skin.getSkinPivot(0);
+    //SkinPivot* sPi1 = skin.getSkinPivot(1);
     
     // assign weights
-    skin.bind(sPo0, sPi0, 0.5);
-    skin.bind(sPo0, sPi1, 0.5);
+    //skin.bind(sPo0, sPi0, 1.0);
+    //skin.bind(sPo0, sPi1, 0.5);
     
     //skin.bind(sPo1, sPi0, 0.5);
     //skin.bind(sPo1, sPi1, 0.5);
     
     //skin.bind(sPo2, sPi1, 1.0);
+    
+    buildSnake();
     
 }
 
@@ -72,10 +74,9 @@ void ofApp::draw(){
     
     
     SkinPivot* pivot1 = skin.getSkinPivot(selectedPivot);
-    //pivot1->setTransformedPosition(ofVec3f(pivot1->position.x, ofGetMouseY()));
-    //pivot1->setRotation(ofMap(ofGetMouseX(), 0, ofGetWindowWidth(), 0, HALF_PI));
-    
-    pivot1->setRotation(HALF_PI);
+    pivot1->setTransformedPosition(ofVec3f(pivot1->position.x, ofGetMouseY()));
+    pivot1->setRotation(ofMap(ofGetMouseX(), 0, ofGetWindowWidth(), 0, HALF_PI));
+    //pivot1->setRotation(HALF_PI);
 
     //cout << ofToString(pivot1->rotation) << endl;
     
@@ -85,63 +86,37 @@ void ofApp::draw(){
     skin.drawPoints();
     skin.drawPivots();
     
+    ofSetColor(0,255,255);
+    ofDrawBitmapString(ofToString(ofVec2f(ofGetMouseX(),ofGetMouseY())), ofGetMouseX(), ofGetMouseY());
     
-    //string p1t = ofToString(skin.getSkinPoint(0)->getPosition());
+
+}
+
+void ofApp::buildSnake(){
     
+    float separation = 50;
+    ofVec3f startPos = ofVec3f(100,100);
     
-    /*
-    for (int i=0; i<skin.getPointCount(); i++) {
-        ofVec3f* pos = skin.getSkinPoint(i)->getPosition();
-        ofDrawCircle(pos->x, pos->y, 5);
+    // SkinPoints
+    for (int i =0; i<12; i++) {
+        ofVec3f topV = startPos + ofVec3f(separation * i, startPos.y);
+        ofVec3f bottomV = startPos + ofVec3f(separation * i, startPos.y + separation);
         
-    }
-     */
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    // THIS WORKED
-    /*
-    ofSetColor(0, 255, 255);
-    
-    for (int i=1; i<bonesPos.size(); i++) {
-        ofDrawLine(bonesPos[i], bonesPos[i-1]);
-        ofDrawBitmapString(ofToString(i), bonesPos[i]);
+        skin.createSkinPoint(topV);
+        skin.createSkinPoint(bottomV);
     }
     
-    //-------
-    // TEST TO SEE IF THE ROTATE WITH MATRIX PROCESS IS WORKING. It is.
+    //SkinPivots
+    ofVec3f pivotStartPos = ofVec3f(150,125);
+    for (int i =0; i<5; i++) {
+        ofVec3f pivot = pivotStartPos + ofVec3f(separation * i, startPos.y);
+        
+        skin.createSkinPivot(pivot, i);
+    }
+
+    skin.bindByDistance(skin.getSkinPoints(), skin.getSkinPivots(), 200);
     
-    ofVec3f root = ofVec3f(ofGetMouseX(),ofGetMouseY(),0);
-    ofVec3f bone1Length = ofVec3f(0,50,0);
     
-    ofMatrix4x4 rot;
-    rot.makeRotationMatrix(ofGetFrameNum() % 360, ofVec3f(0,0,1));
-    
-    
-    ofVec3f rotatedBone = rot * bone1Length;
-    ofVec3f bonePos = root + rotatedBone;
-    
-    ofSetColor(0, 127, 255);
-    ofDrawLine(root, bonePos);
-    
-    //------------
-    
-    skinPoint.render();
-     */
 }
 
 //--------------------------------------------------------------

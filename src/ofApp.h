@@ -35,4 +35,7 @@ class ofApp : public ofBaseApp{
     ofVec3f pivot2;
     */
     
+private:
+    void buildSnake();
+    
 };

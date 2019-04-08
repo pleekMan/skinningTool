@@ -39,6 +39,8 @@ public:
     vector<SkinPivot *> pivots;
     vector<float> weights;
     
+    void normalizeWeights();
+    
     ofVec3f posePosition; // INITIAL POSITION OF BOTH VERTEX AND SKINPOINT
     ofVec3f transformedposition; // WILL TRANSFORM THIS VERTEX
       

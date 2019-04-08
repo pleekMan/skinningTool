@@ -36,9 +36,14 @@ public:
     SkinPoint* getSkinPoint(int i);
     SkinPivot* getSkinPivot(int i);
     int getPointCount();
+    vector<SkinPoint>* getSkinPoints();
+    vector<SkinPivot>* getSkinPivots();
+
+
 
     
     void bind(SkinPoint *point, SkinPivot *pivot, float weight);
+    void bindByDistance(vector<SkinPoint>* inPoints, vector<SkinPivot>* inPivots, float distanceLimit);
     
     vector<SkinPivot> pivots;
     vector<SkinPoint> points;
