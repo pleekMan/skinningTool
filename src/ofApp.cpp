@@ -3,6 +3,8 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
+    ofSetCircleResolution(50);
+    
     /*
     rotation = 10;
     
@@ -67,8 +69,9 @@ void ofApp::setup(){
     //------
     
     
-    //buildSnake();
-    skinTheBall();
+    buildSnake();
+    //skinTheBall();
+    //buildGrid();
     
     
 }
@@ -84,24 +87,47 @@ void ofApp::draw(){
     
     
     
-    SkinPivot* pivot1 = skin.getSkinPivot(selectedPivot);
+    //SkinPivot* pivot1 = skin.getSkinPivot(selectedPivot % skin.getSkinPivots()->size());
     //pivot1->setTransformedPosition(ofVec3f(pivot1->position.x, ofGetMouseY()));
-    pivot1->setRotation(ofMap(ofGetMouseX(), 0, ofGetWindowWidth(), 0, HALF_PI));
+    //pivot1->setRotation(ofMap(ofGetMouseX(), 0, ofGetWindowWidth(), 0, HALF_PI));
     //pivot1->setRotation(HALF_PI);
 
     //cout << ofToString(pivot1->rotation) << endl;
     
-    skin.update();
     
-    skin.drawPose();
-    skin.drawPoints();
-    skin.drawPivots();
-    
-    skin.drawTensorsForPoint(skin.getSkinPoint( selectedPoint % skin.getSkinPoints()->size() ));
-    
-    if(showPivotHeatMap){
-        skin.drawHeatMapForPivot(skin.getSkinPivot(selectedPivot));
+    if (dragPivots) {
+        skin.getSkinPivot(selectedPivot)->setTransformedPosition(ofVec3f(ofGetMouseX(), ofGetMouseY()));
     }
+    
+    
+    skin.update();
+
+    
+    //---- ANIMATIONS
+    //animateTheBall();
+    animateSnake();
+    
+    
+    //-----
+    
+    if (drawDebug) {
+        skin.drawPose();
+        skin.drawPoints();
+        skin.drawPivots();
+        
+        skin.drawTensorsForPoint(skin.getSkinPoint(selectedPoint));
+        
+        if(showPivotHeatMap){
+            skin.drawHeatMapForPivot(skin.getSkinPivot(selectedPivot));
+        }
+        
+        
+        // BIND BY DISTANCE HELPER
+        ofNoFill();
+        ofSetColor(0, 127, 127);
+        ofDrawCircle(ofGetMouseX(), ofGetMouseY(), 500 * (ofGetMouseY() / (float)ofGetWindowHeight()));
+    }
+    
     
     ofSetColor(0,255,255);
     ofDrawBitmapString(ofToString(ofVec2f(ofGetMouseX(),ofGetMouseY())), ofGetMouseX(), ofGetMouseY());
@@ -109,30 +135,78 @@ void ofApp::draw(){
 
 }
 
+void ofApp::buildGrid(){
+    
+    // POINTS
+    for (int y=0; y<ofGetWindowHeight(); y+= 50) {
+        for (int x=0; x<ofGetWindowWidth(); x+= 50) {
+            skin.createSkinPoint(ofVec3f(x,y,0));
+        }
+    }
+    
+    // PIVOTS
+    for (int y=0; y<ofGetWindowHeight(); y+= 100) {
+        for (int x=0; x<ofGetWindowWidth(); x+= 100) {
+            skin.createSkinPivot(ofVec3f(x,y));
+        }
+    }
+    
+    skin.bindByDistance(skin.getSkinPoints(), skin.getSkinPivots(), 200);
+    
+    
+}
+
 void ofApp::buildSnake(){
     
     float separation = 50;
-    ofVec3f startPos = ofVec3f(100,100);
+    ofVec3f startPos = ofVec3f(100,400);
     
     // SkinPoints
-    for (int i =0; i<12; i++) {
-        ofVec3f topV = startPos + ofVec3f(separation * i, startPos.y);
-        ofVec3f bottomV = startPos + ofVec3f(separation * i, startPos.y + separation);
+    for (int i =0; i<15; i++) {
+        ofVec3f topV = startPos + ofVec3f(separation * i, 0);
+        ofVec3f bottomV = startPos + ofVec3f(separation * i, separation);
         
         skin.createSkinPoint(topV);
         skin.createSkinPoint(bottomV);
     }
     
     //SkinPivots
-    ofVec3f pivotStartPos = ofVec3f(150,125);
-    for (int i =0; i<5; i++) {
-        ofVec3f pivot = pivotStartPos + ofVec3f(separation * i, startPos.y);
+    ofVec3f pivotStartPos = ofVec3f(125,425);
+    for (int i =0; i<7; i++) {
+        ofVec3f pivot = pivotStartPos + ofVec3f(separation * i * 2, 0);
         
         skin.createSkinPivot(pivot);
     }
 
     skin.bindByDistance(skin.getSkinPoints(), skin.getSkinPivots(), 200);
     
+    
+}
+
+void ofApp::animateSnake(){
+    
+    
+    for (int i=0; i < skin.getSkinPivots()->size(); i++) {
+        float noiseValue = ofNoise(skin.getSkinPivot(i)->posePosition + ofVec3f(ofGetFrameNum() * 0.01,0,0));
+        //noiseValue *= 0.2;
+        
+        skin.getSkinPivot(i)->setRotation(ofMap(noiseValue, 0, 1, -HALF_PI, HALF_PI));
+    }
+    
+    // DRAW FILLED POLY
+    ofFill();
+    ofSetColor(120,150,255);
+    
+    //ofBeginShape();
+    for (int i=0; i < 14 * 2; i+=2) {
+        ofBeginShape();
+        ofVertex(*skin.getSkinPoint(i)->getPosition());
+        ofVertex(*skin.getSkinPoint(i+1)->getPosition());
+        ofVertex(*skin.getSkinPoint(i+3)->getPosition());
+        ofVertex(*skin.getSkinPoint(i+2)->getPosition());
+        ofEndShape();
+    }
+    //ofEndShape();
     
 }
 //--------------------------------------------------------------
@@ -143,6 +217,7 @@ void ofApp::skinTheBall(){
     circle.circle(500, 500, 300);
     
     vector<ofVec3f> verts = circle.getOutline()[0].getVertices(); // GET THE VERTICES OF THE FIRST PATH INSIDE THE ofPath
+    cout << "-| Verts in circle: " << verts.size() << endl;
     
     // SKIN POINTS
     for (int i=0; i<verts.size(); i++) {
@@ -155,6 +230,21 @@ void ofApp::skinTheBall(){
     skin.createSkinPivot(ofVec3f(600, 600));
     
     skin.bindByDistance(skin.getSkinPoints(), skin.getSkinPivots(), 500);
+    
+}
+
+void ofApp::animateTheBall(){
+    
+    ofFill();
+    ofSetColor(120,255,150, 50);
+    
+    
+    ofBeginShape();
+    for (int i=0; i< skin.getPointCount(); i++) {
+        ofVertex(*skin.getSkinPoint(i)->getPosition());
+    }
+    ofEndShape();
+    
     
 }
 
@@ -171,12 +261,29 @@ void ofApp::keyPressed(int key){
         skin.bindByDistance(skin.getSkinPoints(), skin.getSkinPivots(), 500 * (ofGetMouseY() / (float)ofGetWindowHeight() ));
     }
     
+    // SELECT POINTS
     if (key == 'q' || key == 'Q') {
         selectedPoint--;
+        selectedPoint = selectedPoint % skin.getSkinPoints()->size();
+
     }
     if (key == 'w' || key == 'W') {
         selectedPoint++;
+        selectedPoint = selectedPoint % skin.getSkinPoints()->size();
+
     }
+    
+    // CYCLE PIVOTS
+    if (key == 'a' || key == 'A') {
+        selectedPivot--;
+        selectedPivot = selectedPivot % skin.getSkinPivots()->size();
+    }
+    if (key == 's' || key == 'S') {
+        selectedPivot++;
+        selectedPivot = selectedPivot % skin.getSkinPivots()->size();
+
+    }
+    
     
     if (key == 'c' || key == 'C') {
         skin.clearPointBindings();
@@ -184,6 +291,13 @@ void ofApp::keyPressed(int key){
     
     if (key == 'h' || key == 'H') {
         showPivotHeatMap = !showPivotHeatMap;
+    }
+    
+    if (key == 'd' || key == 'D') {
+        drawDebug = !drawDebug;
+    }
+    if (key == 'p' || key == 'P') {
+        dragPivots = !dragPivots;
     }
     
     

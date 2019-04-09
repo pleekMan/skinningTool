@@ -136,7 +136,7 @@ void SkinTool::drawPose(){
 void SkinTool::drawTensorsForPoint(SkinPoint* point){
     
 
-    ofSetColor(0, 127, 127);
+    ofSetColor(255);
     for (int i=0; i< point->getPivots().size(); i++) {
         SkinPivot* sPi = point->getPivots()[i];
         
@@ -163,7 +163,7 @@ void SkinTool::drawHeatMapForPivot(SkinPivot* pivot){
             
             if(selectedPivotId == sPo->getPivots()[j]->pivotId){
                 
-                ofVec3f pos = *sPo->getPosition();
+                ofVec3f pos = *sPo->getPosePosition();
                 ofSetColor(sPo->weights[j] * 255, 0, 0);
                 
                 ofDrawCircle(pos, 8);
@@ -246,7 +246,7 @@ void SkinTool::bindByDistance(vector<SkinPoint>* inPoints, vector<SkinPivot>* in
 
     clearPointBindings();
     
-    cout << " Pivot : Point : Weight" << endl;
+    //cout << " Pivot : Point : Weight" << endl;
     
     for(int i=0; i < points.size(); i++ ){
         SkinPoint* sPo = &(*inPoints)[i]; // GETTING A POINTER TO THE OBJECT INSIDE THE vector POINTER
@@ -258,7 +258,7 @@ void SkinTool::bindByDistance(vector<SkinPoint>* inPoints, vector<SkinPivot>* in
             if(distance <= distanceLimit){
                 float distanceNorm = ofMap(distance, 0, distanceLimit, 1, 0); // TO NORM
                 bind(sPo, sPi, distanceNorm);
-                cout << "-| " + ofToString(j) + " : " + ofToString(i) + " : " + ofToString(distanceNorm) << endl;
+                //cout << "-| " + ofToString(j) + " : " + ofToString(i) + " : " + ofToString(distanceNorm) << endl;
             }
         }
         

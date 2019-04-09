@@ -28,6 +28,8 @@ class ofApp : public ofBaseApp{
     int selectedPoint = 0;
     
     bool showPivotHeatMap = false;
+    bool drawDebug = false;
+    bool dragPivots = false;
     
     /*
     ofVec3f vertex1;
@@ -40,7 +42,12 @@ class ofApp : public ofBaseApp{
     
 private:
     void buildSnake();
+    void animateSnake();
+    
     void skinTheBall();
+    void animateTheBall();
+    
+    void buildGrid();
 
     
 };
