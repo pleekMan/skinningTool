@@ -174,6 +174,19 @@ void SkinTool::drawHeatMapForPivot(SkinPivot* pivot){
         }
         
     }
+    
+    // HIGHLIGHT PIVOT
+    
+    ofSetColor(0, 255, 255);
+    ofPushMatrix();
+    
+    ofTranslate(pivot->position);
+    ofRotateZ(ofRadToDeg(pivot->rotation));
+    
+    ofDrawLine(0, 0 - 20, 0, 0 + 8);
+    ofDrawLine(0 - 10, 0, 0 + 10, 0);
+    
+    ofPopMatrix();
 }
 
 //-----
@@ -226,16 +239,6 @@ int SkinTool::getPointCount(){
 //-----
 void SkinTool::bind(SkinPoint* point, SkinPivot* pivot, float weight){
     
-    // CHECK IF THE POINT ALREADY IS ATTACHED TO THE PIVOT, TO NOT ADD THE SAME PIVOT TO THE SkinPoint's pivotlist
-    /*
-    bool alreadyAttached = isAlreadyAttached(point, pivot);
-    
-    if (alreadyAttached) {
-        int pivotId = pivot->pivotId;
-    } else{
-        point->attachToPivot(pivot, weight);
-    }
-     */
      point->attachToPivot(pivot, weight);
 }
 
@@ -266,6 +269,24 @@ void SkinTool::bindByDistance(vector<SkinPoint>* inPoints, vector<SkinPivot>* in
     }
     
     
+}
+
+//-----
+
+void SkinTool::pullTensor(SkinPoint *point, SkinPivot *pivot){
+    
+    float pullDistance = ofDist(point->getPosePosition()->x, point->getPosePosition()->y, ofGetMouseX(), ofGetMouseY());
+    ofVec3f pointPos = *point->getPosePosition();
+    ofVec3f pivotPos = *pivot->getPosePosition();
+    
+    ofVec3f pointToPivot = pointPos - pivotPos;
+    
+    pullDistance = ofClamp(pullDistance, 0, pointToPivot.length());
+    
+    bind(point, pivot, pullDistance / pointToPivot.length());
+    
+    //cout << ofToString(pullDistance) << endl;
+    //ofDrawBitmapString(ofToString(pullDistance), 200, 20);
 }
 
 //-----

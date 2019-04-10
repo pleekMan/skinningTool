@@ -44,6 +44,8 @@ public:
     void clearPointBindings();
     void bind(SkinPoint *point, SkinPivot *pivot, float weight);
     void bindByDistance(vector<SkinPoint>* inPoints, vector<SkinPivot>* inPivots, float distanceLimit);
+    void pullTensor(SkinPoint *point, SkinPivot *pivot);
+
     
     vector<SkinPivot> pivots;
     vector<SkinPoint> points;

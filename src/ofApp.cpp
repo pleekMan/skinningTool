@@ -5,6 +5,10 @@ void ofApp::setup(){
     
     ofSetCircleResolution(50);
     
+    gui.setup();
+    gui.add(distanceForAutoBindSlider.setup("AutoBind Distance", 100, 1, 500));
+    gui.add(setWeightsToggle.setup("Set Weights Mode", false));
+    
     /*
     rotation = 10;
     
@@ -70,7 +74,7 @@ void ofApp::setup(){
     
     
     buildSnake();
-    //skinTheBall();
+    //buildTheBall();
     //buildGrid();
     
     
@@ -94,16 +98,24 @@ void ofApp::draw(){
 
     //cout << ofToString(pivot1->rotation) << endl;
     
-    
+    // PIVOT DRAGGING
     if (dragPivots) {
         skin.getSkinPivot(selectedPivot)->setTransformedPosition(ofVec3f(ofGetMouseX(), ofGetMouseY()));
     }
     
+    // PER-VERTEX WEIGHT CALIBRATION
+    if (setWeightsToggle) {
+        //skin.calibratePerVertex();
+    }
     
+    
+    
+    // SKIN CALCULATIONS
     skin.update();
 
     
     //---- ANIMATIONS
+    
     //animateTheBall();
     animateSnake();
     
@@ -122,15 +134,17 @@ void ofApp::draw(){
         }
         
         
-        // BIND BY DISTANCE HELPER
+        // BIND-BY-DISTANCE HELPER
         ofNoFill();
         ofSetColor(0, 127, 127);
-        ofDrawCircle(ofGetMouseX(), ofGetMouseY(), 500 * (ofGetMouseY() / (float)ofGetWindowHeight()));
+        ofDrawCircle(ofGetMouseX(), ofGetMouseY(), distanceForAutoBindSlider);
     }
     
     
     ofSetColor(0,255,255);
     ofDrawBitmapString(ofToString(ofVec2f(ofGetMouseX(),ofGetMouseY())), ofGetMouseX(), ofGetMouseY());
+    
+    gui.draw();
     
 
 }
@@ -211,7 +225,7 @@ void ofApp::animateSnake(){
 }
 //--------------------------------------------------------------
 
-void ofApp::skinTheBall(){
+void ofApp::buildTheBall(){
     
     ofPath circle;
     circle.circle(500, 500, 300);
@@ -229,14 +243,14 @@ void ofApp::skinTheBall(){
     skin.createSkinPivot(ofVec3f(400, 600));
     skin.createSkinPivot(ofVec3f(600, 600));
     
-    skin.bindByDistance(skin.getSkinPoints(), skin.getSkinPivots(), 500);
+    skin.bindByDistance(skin.getSkinPoints(), skin.getSkinPivots(), 300);
     
 }
 
 void ofApp::animateTheBall(){
     
     ofFill();
-    ofSetColor(120,255,150, 50);
+    ofSetColor(120,255,150,127);
     
     
     ofBeginShape();
@@ -258,7 +272,9 @@ void ofApp::keyPressed(int key){
     }
     
     if (key == '3') {
-        skin.bindByDistance(skin.getSkinPoints(), skin.getSkinPivots(), 500 * (ofGetMouseY() / (float)ofGetWindowHeight() ));
+        //skin.bindByDistance(skin.getSkinPoints(), skin.getSkinPivots(), 500 * (ofGetMouseY() / (float)ofGetWindowHeight() ));
+        skin.bindByDistance(skin.getSkinPoints(), skin.getSkinPivots(), distanceForAutoBindSlider);
+
     }
     
     // SELECT POINTS
@@ -296,11 +312,20 @@ void ofApp::keyPressed(int key){
     if (key == 'd' || key == 'D') {
         drawDebug = !drawDebug;
     }
+    
     if (key == 'p' || key == 'P') {
         dragPivots = !dragPivots;
     }
     
     
+    if (key == 'm' || key == 'M') {
+        setWeightsToggle = !setWeightsToggle;
+    }
+    
+    
+    //pointWeightSlider.setFillColor(ofColor(255,0,0));
+    
+
 }
 
 //--------------------------------------------------------------
@@ -315,6 +340,11 @@ void ofApp::mouseMoved(int x, int y ){
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
+    
+    
+    if (setWeightsToggle) {
+        skin.pullTensor(skin.getSkinPoint(selectedPoint), skin.getSkinPivot(selectedPivot));
+    }
 
 }
 

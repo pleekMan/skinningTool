@@ -47,6 +47,9 @@ public:
     
     
 private:
-    
+    int isAlreadyAttachedTo(SkinPivot* pivot);
+    void addPivot(SkinPivot* pivot, float weight);
+    void updatePivot(int pivotId, float weight);
+
     
 };

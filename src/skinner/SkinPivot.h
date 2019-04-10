@@ -27,6 +27,8 @@ public:
     void setTransformedPosition(ofVec3f pos);
     void setRotation(float angle);
     
+    ofVec3f* getPosePosition();
+    ofVec3f* getPosition();
     ofVec3f getTranslation();
     
     int pivotId;

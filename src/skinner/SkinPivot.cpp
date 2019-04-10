@@ -44,3 +44,12 @@ void SkinPivot::setRotation(float angle){
 ofVec3f SkinPivot::getTranslation(){
     return position - posePosition;
 }
+
+ofVec3f* SkinPivot::getPosePosition(){
+    return &posePosition; // CHANGE TO TRANSFORMED POSITION
+}
+
+ofVec3f* SkinPivot::getPosition(){
+    return &position; // CHANGE TO TRANSFORMED POSITION
+}
+

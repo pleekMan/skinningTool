@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "SkinTool.h"
+#include "ofxGui.h"
 
 class ofApp : public ofBaseApp{
 
@@ -30,21 +31,20 @@ class ofApp : public ofBaseApp{
     bool showPivotHeatMap = false;
     bool drawDebug = false;
     bool dragPivots = false;
+    //bool setWeightsMode = false;
     
-    /*
-    ofVec3f vertex1;
-    ofVec3f vertex2;
-    ofVec3f vertex3;
-		
-    ofVec3f pivot1;
-    ofVec3f pivot2;
-    */
+    // GUI -----
+    ofxPanel gui;
+    ofxFloatSlider distanceForAutoBindSlider;
+    ofxToggle setWeightsToggle;
+
+    
     
 private:
     void buildSnake();
     void animateSnake();
     
-    void skinTheBall();
+    void buildTheBall();
     void animateTheBall();
     
     void buildGrid();

@@ -33,8 +33,32 @@ ofVec3f* SkinPoint::getPosition(){
 }
 
 void SkinPoint::attachToPivot(SkinPivot *pivot, float weight){
+    
+    // CHECK IF THE POINT ALREADY IS ATTACHED TO THE PIVOT, TO NOT ADD THE SAME PIVOT TO THE SkinPoint's pivotlist
+    
+    int pivotExist = isAlreadyAttachedTo(pivot); // IF EXIST, RETURNS pivotId
+    if (pivotExist != -1) {
+        updatePivot(pivotExist, weight);
+    } else{
+        addPivot(pivot, weight);
+    }
+    
+
+}
+
+void SkinPoint::addPivot(SkinPivot* pivot, float weight){
     pivots.push_back(pivot);
     weights.push_back(weight);
+}
+
+void SkinPoint::updatePivot(int pivotId, float weight){
+    
+    for (int i=0; i<pivots.size(); i++) {
+        if (pivots[i]->pivotId == pivotId) {
+            weights[i] = weight;
+            return;
+        }
+    }
 }
 
 vector <SkinPivot*> SkinPoint::getPivots(){
@@ -91,6 +115,15 @@ void SkinPoint::render(){
     
     
     
+}
+
+int SkinPoint::isAlreadyAttachedTo(SkinPivot *pivot){
+    for (int i=0; i<pivots.size(); i++) {
+        if (pivots[i]->pivotId == pivot->pivotId) {
+            return pivots[i]->pivotId;
+        }
+    }
+    return -1;
 }
 
 /*
