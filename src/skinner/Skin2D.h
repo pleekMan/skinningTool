@@ -18,7 +18,7 @@
 
 //#endif /* SkinTool_h */
 
-class SkinTool {
+class Skin2D {
     
     
 public:
@@ -31,25 +31,44 @@ public:
     void drawTensorsForPoint(SkinPoint* point);
     void drawHeatMapForPivot(SkinPivot* pivot);
     
-    void createSkinPoint(ofVec3f node);
-    void createSkinPivot(ofVec3f vertex);
+    void createPoint(ofVec3f node);
+    void createPivot(ofVec3f vertex);
     
     
-    SkinPoint* getSkinPoint(int i);
-    SkinPivot* getSkinPivot(int i);
+    SkinPoint* getPoint(int i);
+    SkinPivot* getPivot(int i);
     int getPointCount();
-    vector<SkinPoint>* getSkinPoints();
-    vector<SkinPivot>* getSkinPivots();
+    int getPivotCount();
+    vector<SkinPoint>* getPoints();
+    vector<SkinPivot>* getPivots();
 
     void clearPointBindings();
     void bind(SkinPoint *point, SkinPivot *pivot, float weight);
     void bindByDistance(vector<SkinPoint>* inPoints, vector<SkinPivot>* inPivots, float distanceLimit);
     void pullTensor(SkinPoint *point, SkinPivot *pivot);
-
+    
+    void printPointData(int selectedPoint);
+    
+    // SELECTED PIVOT
+    int selectedPivot = 0;
+    void setSelectedPivot(int index);
+    SkinPivot* getSelectedPivot();
+    int getSelectedPivotId();
+    
+    // SELECTED POINT
+    int selectedPoint = 0;
+    void setSelectedPoint(int index);
+    SkinPoint* getSelectedPoint();
+    int getSelectedPointId();
     
     vector<SkinPivot> pivots;
     vector<SkinPoint> points;
     int pivotIdCounter = 0;
+    int pointIdCounter = 0;
+    
+    void selectWithPointer(int x, int y);
+
+
     
 private:
     bool isAlreadyAttached(SkinPoint* point, SkinPivot* pivot);

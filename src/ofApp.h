@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "SkinTool.h"
+#include "Skin2D.h"
 #include "ofxGui.h"
 
 class ofApp : public ofBaseApp{
@@ -23,10 +23,8 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
-    SkinTool skin;
+    Skin2D skin;
     
-    int selectedPivot = 0;
-    int selectedPoint = 0;
     
     bool showPivotHeatMap = false;
     bool drawDebug = false;

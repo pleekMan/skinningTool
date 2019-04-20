@@ -12,7 +12,7 @@
 		1D6B78EF041B097CE4F423C4 /* svgtiny.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38BC601AD0A2F4F2319D1460 /* svgtiny.cpp */; };
 		4294163B15857489B2176769 /* svgtiny_gradient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 582921BA98D224ED41833868 /* svgtiny_gradient.cpp */; };
 		483908258D00B98B4BE69F07 /* ofxLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 78D67A00EB899FAC09430597 /* ofxLabel.cpp */; };
-		4A3084752257E73E00CD716A /* SkinTool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A3084732257E73E00CD716A /* SkinTool.cpp */; };
+		4A3084752257E73E00CD716A /* Skin2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A3084732257E73E00CD716A /* Skin2D.cpp */; };
 		4A5E59042217C0C80013101D /* SkinPivot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A5E59022217C0C80013101D /* SkinPivot.cpp */; };
 		4A998AC322167655001FBB5D /* SkinPoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A998AC122167655001FBB5D /* SkinPoint.cpp */; };
 		5A4349E9754D6FA14C0F2A3A /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC5DA1C87211D4F6377DA719 /* tinyxmlparser.cpp */; };
@@ -72,8 +72,8 @@
 		2834D88A62CD23F3DE2C47D1 /* ofxButton.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxButton.h; path = ../../../addons/ofxGui/src/ofxButton.h; sourceTree = SOURCE_ROOT; };
 		2B40EDA85BEB63E46785BC29 /* tinyxml.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = tinyxml.cpp; path = ../../../addons/ofxXmlSettings/libs/tinyxml.cpp; sourceTree = SOURCE_ROOT; };
 		38BC601AD0A2F4F2319D1460 /* svgtiny.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = svgtiny.cpp; path = ../../../addons/ofxSvg/libs/svgTiny/src/svgtiny.cpp; sourceTree = SOURCE_ROOT; };
-		4A3084732257E73E00CD716A /* SkinTool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SkinTool.cpp; path = skinner/SkinTool.cpp; sourceTree = "<group>"; };
-		4A3084742257E73E00CD716A /* SkinTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SkinTool.h; path = skinner/SkinTool.h; sourceTree = "<group>"; };
+		4A3084732257E73E00CD716A /* Skin2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Skin2D.cpp; path = skinner/Skin2D.cpp; sourceTree = "<group>"; };
+		4A3084742257E73E00CD716A /* Skin2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Skin2D.h; path = skinner/Skin2D.h; sourceTree = "<group>"; };
 		4A5E59022217C0C80013101D /* SkinPivot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SkinPivot.cpp; path = skinner/SkinPivot.cpp; sourceTree = "<group>"; };
 		4A5E59032217C0C80013101D /* SkinPivot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SkinPivot.h; path = skinner/SkinPivot.h; sourceTree = "<group>"; };
 		4A998AC122167655001FBB5D /* SkinPoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SkinPoint.cpp; path = Skinner/SkinPoint.cpp; sourceTree = "<group>"; };
@@ -153,8 +153,8 @@
 				4A998AC222167655001FBB5D /* SkinPoint.h */,
 				4A5E59022217C0C80013101D /* SkinPivot.cpp */,
 				4A5E59032217C0C80013101D /* SkinPivot.h */,
-				4A3084732257E73E00CD716A /* SkinTool.cpp */,
-				4A3084742257E73E00CD716A /* SkinTool.h */,
+				4A3084732257E73E00CD716A /* Skin2D.cpp */,
+				4A3084742257E73E00CD716A /* Skin2D.h */,
 			);
 			name = skinner;
 			sourceTree = "<group>";
@@ -395,7 +395,7 @@
 				B266578FC55D23BFEBC042E7 /* ofxGuiGroup.cpp in Sources */,
 				483908258D00B98B4BE69F07 /* ofxLabel.cpp in Sources */,
 				F285EB3169F1566CA3D93C20 /* ofxPanel.cpp in Sources */,
-				4A3084752257E73E00CD716A /* SkinTool.cpp in Sources */,
+				4A3084752257E73E00CD716A /* Skin2D.cpp in Sources */,
 				837220E80EB56CD44AD27F2A /* ofxSlider.cpp in Sources */,
 				B56FE57CC35806596D38118C /* ofxSliderGroup.cpp in Sources */,
 				4A998AC322167655001FBB5D /* SkinPoint.cpp in Sources */,

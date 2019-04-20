@@ -1,18 +1,18 @@
 //
-//  SkinTool.cpp
+//  Skin2D.cpp
 //  skinningTool
 //
 //  Created by PleekMan on 5/4/2019.
 //
 //
 
-#include "SkinTool.h"
+#include "Skin2D.h"
 //#include "SkinPivot.h"
 
 
 //-----
 
-void SkinTool::update(){
+void Skin2D::update(){
     
     
     // FOR ALL SkinPoints
@@ -74,7 +74,7 @@ void SkinTool::update(){
 }
 //-----
 
-void SkinTool::drawPivots(){
+void Skin2D::drawPivots(){
     ofSetColor(255,0,0);
     //ofNoFill();
     
@@ -93,22 +93,23 @@ void SkinTool::drawPivots(){
 }
 
 //-----
-void SkinTool::drawPoints(){
+void Skin2D::drawPoints(){
     ofSetColor(0, 127, 255);
-    ofNoFill();
+    ofFill();
     for (int i=0; i<points.size(); i++) {
-        ofDrawCircle(*points[i].getPosition(),5);
+        ofDrawCircle(*points[i].getPosition(),3);
     }
+    
 }
 
 //-----
 
-void SkinTool::drawPose(){
+void Skin2D::drawPose(){
     
     // PIVOTS
     
-    ofSetColor(200);
-    //ofNoFill();
+    ofSetColor(255,255,0);
+    ofNoFill();
     
     for (int i=0; i<pivots.size(); i++) {
         
@@ -123,17 +124,30 @@ void SkinTool::drawPose(){
         ofPopMatrix();
     }
     
+    // SELECTED IN POSE/TRANSFORMED
+    ofSetColor(255,0,0);
+    ofDrawCircle(*pivots[selectedPivot].getPosePosition(),10);
+    ofDrawCircle(*pivots[selectedPivot].getPosition(),10);
+    
+    //----
+    
     // POINTS
-    ofSetColor(127);
+    ofSetColor(255);
     ofNoFill();
     for (int i=0; i<points.size(); i++) {
         ofDrawCircle(*points[i].getPosePosition(),5);
     }
+    
+    // SELECTED IN POSE/TRANSFORMED
+    ofSetColor(0,255,0);
+    ofDrawCircle(*points[selectedPoint].getPosePosition(),10);
+    ofDrawCircle(*points[selectedPoint].getPosition(),10);
+    
 }
 
 //-----
 
-void SkinTool::drawTensorsForPoint(SkinPoint* point){
+void Skin2D::drawTensorsForPoint(SkinPoint* point){
     
 
     ofSetColor(255);
@@ -150,7 +164,7 @@ void SkinTool::drawTensorsForPoint(SkinPoint* point){
     
 }
 
-void SkinTool::drawHeatMapForPivot(SkinPivot* pivot){
+void Skin2D::drawHeatMapForPivot(SkinPivot* pivot){
     
     ofFill();
     
@@ -180,7 +194,7 @@ void SkinTool::drawHeatMapForPivot(SkinPivot* pivot){
     ofSetColor(0, 255, 255);
     ofPushMatrix();
     
-    ofTranslate(pivot->position);
+    ofTranslate(pivot->posePosition);
     ofRotateZ(ofRadToDeg(pivot->rotation));
     
     ofDrawLine(0, 0 - 20, 0, 0 + 8);
@@ -191,60 +205,70 @@ void SkinTool::drawHeatMapForPivot(SkinPivot* pivot){
 
 //-----
 
-void SkinTool::createSkinPivot(ofVec3f node){
+void Skin2D::createPivot(ofVec3f node){
     
     SkinPivot newPivot = SkinPivot(node, pivotIdCounter);
     pivots.push_back(newPivot);
     
     pivotIdCounter++;
+
 }
 
 //-----
 
-void SkinTool::createSkinPoint(ofVec3f vertex){
-    SkinPoint newPoint = SkinPoint(vertex);
+void Skin2D::createPoint(ofVec3f vertex){
+    SkinPoint newPoint = SkinPoint(vertex, pointIdCounter);
     points.push_back(newPoint);
+    
+    pointIdCounter++;
+
 }
 
 //-----
 
-SkinPoint* SkinTool::getSkinPoint(int i){
+SkinPoint* Skin2D::getPoint(int i){
     return &points[i];
 }
 
 //-----
 
-SkinPivot* SkinTool::getSkinPivot(int i){
+SkinPivot* Skin2D::getPivot(int i){
     return &pivots[i];
 }
 
 //-----
 
-vector<SkinPoint>* SkinTool::getSkinPoints(){
+vector<SkinPoint>* Skin2D::getPoints(){
     return &points;
 }
 
 //-----
 
-vector<SkinPivot>* SkinTool::getSkinPivots(){
+vector<SkinPivot>* Skin2D::getPivots(){
     return &pivots;
 }
 
 //-----
 
-int SkinTool::getPointCount(){
+int Skin2D::getPointCount(){
     return points.size();
 }
 
 //-----
-void SkinTool::bind(SkinPoint* point, SkinPivot* pivot, float weight){
+
+int Skin2D::getPivotCount(){
+    return pivots.size();
+}
+
+//-----
+void Skin2D::bind(SkinPoint* point, SkinPivot* pivot, float weight){
     
      point->attachToPivot(pivot, weight);
 }
 
 //-----
 
-void SkinTool::bindByDistance(vector<SkinPoint>* inPoints, vector<SkinPivot>* inPivots, float distanceLimit){
+void Skin2D::bindByDistance(vector<SkinPoint>* inPoints, vector<SkinPivot>* inPivots, float distanceLimit){
 
 
     clearPointBindings();
@@ -273,7 +297,7 @@ void SkinTool::bindByDistance(vector<SkinPoint>* inPoints, vector<SkinPivot>* in
 
 //-----
 
-void SkinTool::pullTensor(SkinPoint *point, SkinPivot *pivot){
+void Skin2D::pullTensor(SkinPoint *point, SkinPivot *pivot){
     
     float pullDistance = ofDist(point->getPosePosition()->x, point->getPosePosition()->y, ofGetMouseX(), ofGetMouseY());
     ofVec3f pointPos = *point->getPosePosition();
@@ -291,7 +315,78 @@ void SkinTool::pullTensor(SkinPoint *point, SkinPivot *pivot){
 
 //-----
 
-void SkinTool::clearPointBindings(){
+void Skin2D::setSelectedPivot(int index){
+    
+    if(getPivotCount() > 0){
+        selectedPivot = index % pivots.size();
+    } else {
+        cout << "-|| Skin2D : THE SPECIFIED PIVOT IS OUT OF RANGE" << endl;
+    }
+}
+
+SkinPivot* Skin2D::getSelectedPivot(){
+    return &pivots[selectedPivot];
+}
+
+int Skin2D::getSelectedPivotId(){
+    return pivots[selectedPivot].pivotId;
+}
+
+//-----
+
+void Skin2D::setSelectedPoint(int index){
+    
+    if(getPointCount() > 0){
+        //selectedPoint = selectedPoint % getPoints()->size();
+        selectedPoint = index % points.size();
+    } else {
+        cout << "-|| Skin2D : THE SPECIFIED POINT IS OUT OF RANGE" << endl;
+    }
+}
+
+SkinPoint* Skin2D::getSelectedPoint(){
+    return &points[selectedPoint];
+}
+
+
+int Skin2D::getSelectedPointId(){
+    return points[selectedPoint].pointId;
+}
+
+
+//-----
+
+void Skin2D::selectWithPointer(int x, int y){
+    
+    // FIRST CHECK pivots
+    for (int i=0; i < pivots.size(); i++) {
+        SkinPivot* spi = getPivot(i);
+        
+        float dist = ofDist(spi->getPosePosition()->x, spi->getPosePosition()->y, x, y);
+        
+        if (dist < 8) {
+            setSelectedPivot(spi->pivotId);
+            return;
+        }
+    }
+    
+    // SECOND CHECK POINTS
+    for (int i=0; i < points.size(); i++) {
+        SkinPoint* spo = getPoint(i);
+        
+        float dist = ofDist(spo->getPosePosition()->x, spo->getPosePosition()->y, x, y);
+        
+        if (dist < 8) {
+            setSelectedPoint(spo->pointId);
+            return;
+        }
+    }
+}
+
+//-----
+
+
+void Skin2D::clearPointBindings(){
     // CLEARS ALL WEIGHTS AND ATTACHED PIVOTS FROM ALL POINTS
     // DOES NOT CLEAR points AND pivots ALREADY CREATED IN THE SKIN
     
@@ -303,7 +398,7 @@ void SkinTool::clearPointBindings(){
 //-----
 
 
-bool SkinTool::isAlreadyAttached(SkinPoint *point, SkinPivot *pivot){
+bool Skin2D::isAlreadyAttached(SkinPoint *point, SkinPivot *pivot){
     
     for (int i=0; i<point->getPivots().size(); i++) {
         int inputPivotId = pivot->pivotId;
@@ -313,5 +408,22 @@ bool SkinTool::isAlreadyAttached(SkinPoint *point, SkinPivot *pivot){
     }
     
     return false;
+    
+}
+
+void Skin2D::printPointData(int selectedPoint){
+    
+    SkinPoint* point = getPoint(selectedPoint);
+    
+    //string pointData = "Point => " + ofToString(selectedPoint);
+    cout << "-| Point: " + ofToString(selectedPoint) << endl;
+    cout << "--| Pivots | Weights " << endl;
+
+    
+    for (int i=0; i < point->getPivots().size(); i++) {
+        cout << "--| " + ofToString(point->getPivots()[i]->pivotId) + " => \t\t" + ofToString(point->getWeights()[i]) << endl;
+    }
+    cout << "-----------" << endl;
+
     
 }

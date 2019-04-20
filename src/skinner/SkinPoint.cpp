@@ -9,9 +9,17 @@
 #include "SkinPoint.h"
 
 
-SkinPoint::SkinPoint(ofVec3f pos){
+SkinPoint::SkinPoint(ofVec3f pos, int _id){
     setPosePosition(pos);
+    setId(_id);
     
+    
+}
+
+//------
+
+void SkinPoint::setId(int _id){
+    pointId = _id;
 }
 
 //------
