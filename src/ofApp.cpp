@@ -9,6 +9,7 @@ void ofApp::setup(){
     gui.setup();
     gui.add(distanceForAutoBindSlider.setup("AutoBind Distance", 100, 1, 500));
     gui.add(setWeightsToggle.setup("Set Weights Mode", false));
+
     
     /*
     rotation = 10;
@@ -75,9 +76,11 @@ void ofApp::setup(){
     
     
     //buildSnake();
-    buildTheBall();
+    buildTheBall2();
     //buildGrid();
     
+    //skin.skin(&circleShape);
+
     
 }
 
@@ -117,8 +120,10 @@ void ofApp::draw(){
     
     //---- ANIMATIONS
     
-    animateTheBall();
+    animateTheBall2();
     //animateSnake();
+    
+    //circleShape.getVertices()[0].set(ofGetMouseX(), ofGetMouseY());
     
     
     //-----
@@ -151,6 +156,7 @@ void ofApp::draw(){
 
 }
 
+/*
 void ofApp::buildGrid(){
     
     // POINTS
@@ -171,7 +177,9 @@ void ofApp::buildGrid(){
     
     
 }
+ */
 
+/*
 void ofApp::buildSnake(){
     
     float separation = 50;
@@ -201,7 +209,7 @@ void ofApp::buildSnake(){
     
     
 }
-
+*/
 void ofApp::animateSnake(){
     
     
@@ -230,6 +238,7 @@ void ofApp::animateSnake(){
 }
 //--------------------------------------------------------------
 
+/*
 void ofApp::buildTheBall(){
     
     ofPath circle;
@@ -251,6 +260,25 @@ void ofApp::buildTheBall(){
     skin.bindByDistance(skin.getPoints(), skin.getPivots(), 300);
     
 }
+*/
+
+void ofApp::buildTheBall2(){
+    
+    ofVec3f center = ofVec3f(ofGetWidth() * 0.5, ofGetHeight() * 0.5);
+    int res = 10;
+    float rad = 200;
+    
+    for (int i=0; i<res; i++) {
+        float x = rad * (cos((TWO_PI / res) * i)) + center.x;
+        float y = rad * (sin((TWO_PI / res) * i)) + center.y;
+        
+        circleShape.addVertex(ofPoint(x,y));
+    }
+    circleShape.close();
+    
+}
+
+
 
 void ofApp::animateTheBall(){
     
@@ -267,14 +295,31 @@ void ofApp::animateTheBall(){
     
 }
 
+void ofApp::animateTheBall2(){
+    
+    ofSetColor(0, 150, 200);
+    ofFill();
+    circleShape.draw();
+    
+    
+}
+
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if (key == '1') {
-    }
-    if (key == '2') {
+        skin.setMode(skin.EDIT);
     }
     
-    if (key == '3') {
+    if (key == '2') {
+        skin.setMode(skin.ADD_PIVOT);
+    }
+    
+    
+    if (key == 't' || key == 'T') {
+        skin.skin(&circleShape);
+    }
+    
+    if (key == 'b' || key == 'B') {
         //skin.bindByDistance(skin.getPoints(), skin.getPivots(), 500 * (ofGetMouseY() / (float)ofGetWindowHeight() ));
         skin.bindByDistance(skin.getPoints(), skin.getPivots(), distanceForAutoBindSlider);
 
@@ -350,7 +395,9 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-    skin.selectWithPointer(x, y);
+
+    skin.onMousePressed(x, y, button);
+
 }
 
 //--------------------------------------------------------------

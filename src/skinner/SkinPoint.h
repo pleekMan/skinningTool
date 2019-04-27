@@ -20,7 +20,7 @@
 class SkinPoint {
     
 public:
-    SkinPoint(ofVec3f vertex, int _id);
+    SkinPoint(ofVec3f linkedVert, int _id);
     
     void init();
     void update();
@@ -38,19 +38,22 @@ public:
     vector<SkinPivot*> getPivots();
     vector<float> getWeights();
 
-    
-    vector<SkinPivot *> pivots;
-    vector<float> weights;
+    bool hasPivotsAttached();
     
     void normalizeWeights();
     
     ofVec3f posePosition; // INITIAL POSITION OF BOTH VERTEX AND SKINPOINT
-    ofVec3f transformedposition; // WILL TRANSFORM THIS VERTEX
+    ofVec3f* linkedVertex; // WILL TRANSFORM THIS VERTEX
     int pointId;
       
     
     
 private:
+    
+    
+    vector<SkinPivot *> pivots;
+    vector<float> weights;
+    
     int isAlreadyAttachedTo(SkinPivot* pivot);
     void addPivot(SkinPivot* pivot, float weight);
     void updatePivot(int pivotId, float weight);

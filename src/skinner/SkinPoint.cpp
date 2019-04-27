@@ -9,9 +9,14 @@
 #include "SkinPoint.h"
 
 
-SkinPoint::SkinPoint(ofVec3f pos, int _id){
-    setPosePosition(pos);
+SkinPoint::SkinPoint(ofVec3f linkedVert, int _id){
+    setPosePosition(ofVec3f(linkedVert.x, linkedVert.y)); // POSE POS IS A COPY OF THE VERTEX'S INIT POS
+    linkedVertex = &linkedVert;
     setId(_id);
+    
+    
+        
+    cout << "SkinPoint : " + ofToString(_id) + " : " << &linkedVert << endl;
     
     
 }
@@ -29,15 +34,15 @@ void SkinPoint::setPosePosition(ofVec3f pos){
 }
 
 void SkinPoint::setPosition(ofVec3f newPos){
-    transformedposition = newPos;
+    linkedVertex->set(newPos);
 }
 
 ofVec3f* SkinPoint::getPosePosition(){
-    return &posePosition; // CHANGE TO TRANSFORMED POSITION
+    return &posePosition; // 
 }
 
 ofVec3f* SkinPoint::getPosition(){
-    return &transformedposition; // CHANGE TO TRANSFORMED POSITION
+    return linkedVertex; // CHANGE TO TRANSFORMED POSITION
 }
 
 void SkinPoint::attachToPivot(SkinPivot *pivot, float weight){
@@ -132,6 +137,10 @@ int SkinPoint::isAlreadyAttachedTo(SkinPivot *pivot){
         }
     }
     return -1;
+}
+
+bool SkinPoint::hasPivotsAttached(){
+    return pivots.empty();
 }
 
 /*

@@ -25,6 +25,7 @@ class ofApp : public ofBaseApp{
     
     Skin2D skin;
     
+    ofPolyline circleShape;
     
     bool showPivotHeatMap = false;
     bool drawDebug = false;
@@ -36,6 +37,7 @@ class ofApp : public ofBaseApp{
     ofxFloatSlider distanceForAutoBindSlider;
     ofxToggle setWeightsToggle;
 
+
     
     
 private:
@@ -43,7 +45,11 @@ private:
     void animateSnake();
     
     void buildTheBall();
+    void buildTheBall2();
+
     void animateTheBall();
+    void animateTheBall2();
+
     
     void buildGrid();
 
